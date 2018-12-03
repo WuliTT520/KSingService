@@ -6,7 +6,6 @@ import com.ksing.demo.entity.User_info;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.Calendar;
 
 
 public class LUser {

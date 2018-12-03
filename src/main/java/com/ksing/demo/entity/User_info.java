@@ -103,6 +103,7 @@ public class User_info {
     }
 
     public String getIs_show_in2() {
+
         return is_show_in2;
     }
 
