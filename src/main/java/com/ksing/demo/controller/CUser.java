@@ -2,9 +2,11 @@ package com.ksing.demo.controller;
 
 import com.ksing.demo.entity.DynamicState;
 import com.ksing.demo.entity.User;
+import com.ksing.demo.entity.UserInfo;
 import com.ksing.demo.entity.User_info;
 import com.ksing.demo.logic.LDynamicState;
 import com.ksing.demo.logic.LUser;
+import org.springframework.http.HttpRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +52,7 @@ public class CUser {
     public User_info getUserInfo(HttpServletRequest request, HttpServletResponse response){
 //        String code=request.getParameter("code");
         String code=request.getSession().getAttribute("code").toString();
+        System.out.println(code);
         User_info user_info=null;
         LUser lUser=new LUser();
         try {
@@ -66,6 +69,29 @@ public class CUser {
             }
         }
         return user_info;
+    }
+    /*获取我的信息主界面*/
+    @RequestMapping("/getUserInfo")
+    public UserInfo getinfo(HttpServletRequest request, HttpServletResponse response){
+        String code=request.getSession().getAttribute("code").toString();
+        LUser lUser=new LUser();
+        UserInfo userInfo=null;
+        userInfo=lUser.getinfo(code);
+        return userInfo;
+    }
+    /*获取我的动态*/
+    @RequestMapping("/getMyDynamic")
+    public List<DynamicState> getMyDynamic(HttpServletRequest request){
+        String code=request.getSession().getAttribute("code").toString();
+        List<DynamicState> dynamicStates=null;
+        LDynamicState lDynamicState=new LDynamicState();
+        try {
+            dynamicStates=lDynamicState.getMyFD(code);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return dynamicStates;
+
     }
     /*更改姓名*/
     @RequestMapping(value = "/setname",method = RequestMethod.POST)

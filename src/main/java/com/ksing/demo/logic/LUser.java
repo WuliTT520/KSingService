@@ -2,10 +2,13 @@ package com.ksing.demo.logic;
 
 import com.ksing.demo.SpringUtil;
 import com.ksing.demo.entity.User;
+import com.ksing.demo.entity.UserInfo;
 import com.ksing.demo.entity.User_info;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.List;
+import java.util.Map;
 
 
 public class LUser {
@@ -167,5 +170,38 @@ public class LUser {
         }else {
             return false;
         }
+    }
+
+    public UserInfo getinfo(String code){
+        UserInfo userInfo=new UserInfo();
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        String sql="SELECT COUNT(focus_code) as focus\n" +
+                "from user_focus \n" +
+                "where code='"+code+"' ";
+        userInfo.setFocused_num(jdbcTemplate.queryForObject(sql,int.class));
+        sql="SELECT COUNT(friend_code) as friends\n" +
+                "from user_friend\n" +
+                "where code='"+code+"' ";
+        userInfo.setFriend_num(jdbcTemplate.queryForObject(sql,int.class));
+        sql="SELECT name,user_dp\n" +
+                "from user_info\n" +
+                "where code='"+code+"' ";
+        List<Map<String, Object>> list=jdbcTemplate.queryForList(sql);
+        for(Map<String, Object> map : list){
+            userInfo.setUser_name(map.get("name").toString());
+            userInfo.setUser_dp(map.get("user_dp").toString());
+        }
+        sql="SELECT is_vip\n" +
+                "from user\n" +
+                "where code='"+code+"' ";
+        userInfo.setIs_Vip(jdbcTemplate.queryForObject(sql,String.class));
+        sql="SELECT exp\n" +
+                "from user_grade\n" +
+                "where code='"+code+"' ";
+        int exp=jdbcTemplate.queryForObject(sql,int.class);
+        int grade=exp/1000;
+        userInfo.setGrade(grade);
+//        userInfo.print();
+        return userInfo;
     }
 }
