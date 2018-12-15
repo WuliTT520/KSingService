@@ -107,4 +107,18 @@ public class LDynamicState {
         dynamicStateInfo.setComments(comments);
         return dynamicStateInfo;
     }
+
+    public int addComment(String state_code,String friend_code ,String text){
+        int n=0;
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        String sql="INSERT INTO dynamic_state_evaluate\n" +
+                "(state_code,friend_code,text,isread)\n" +
+                "VALUES ('"+state_code+"','"+friend_code+"','"+text+"',0)";
+        try {
+            n=jdbcTemplate.update(sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return n;
+    }
 }

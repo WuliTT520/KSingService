@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.List;
 
 @RestController
@@ -287,5 +288,22 @@ public class CUser {
             e.printStackTrace();
         }
         return dynamicStateInfo;
+    }
+    /*添加评论*/
+    @RequestMapping("addComment")
+    public void addComment(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        String code=request.getSession().getAttribute("code").toString();
+        String text=request.getParameter("text").toString();
+        String state_code=request.getParameter("state_code").toString();
+        PrintWriter out=response.getWriter();
+        LDynamicState lDynamicState=new LDynamicState();
+        int flag=lDynamicState.addComment(state_code,code,text);
+        if (flag==0){
+            /*失败*/
+            out.write("0");
+        }else{
+            /*成功*/
+            out.write("1");
+        }
     }
 }
