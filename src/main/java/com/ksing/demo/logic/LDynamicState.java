@@ -1,7 +1,9 @@
 package com.ksing.demo.logic;
 
 import com.ksing.demo.SpringUtil;
+import com.ksing.demo.entity.Comment;
 import com.ksing.demo.entity.DynamicState;
+import com.ksing.demo.entity.DynamicStateInfo;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
@@ -59,5 +61,50 @@ public class LDynamicState {
             dynamicStates.add(dynamicState);
         }
         return dynamicStates;
+    }
+
+    public DynamicStateInfo getDSI(String state_code){
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        DynamicStateInfo dynamicStateInfo=new DynamicStateInfo();
+        String sql="select *\n" +
+                "from dynamic_state\n" +
+                "where state_code='"+state_code+"'";
+        List<Map<String,Object>>list=jdbcTemplate.queryForList(sql);
+        /*动态基本信息*/
+        dynamicStateInfo.setCode(list.get(0).get("code").toString());
+        dynamicStateInfo.setState_code(list.get(0).get("state_code").toString());
+        dynamicStateInfo.setSong_code(list.get(0).get("song_code").toString());
+        dynamicStateInfo.setUser_text(list.get(0).get("user_text").toString());
+        dynamicStateInfo.setShare_num(list.get(0).get("share_num").toString());
+        dynamicStateInfo.setLike_num(list.get(0).get("like_num").toString());
+        dynamicStateInfo.setEvaluate_num(list.get(0).get("evaluate_num").toString());
+        dynamicStateInfo.setGift_num(list.get(0).get("gift_num").toString());
+        /*动态用户信息*/
+        sql="select user_dp,name\n" +
+                "from user_info\n" +
+                "where code='"+dynamicStateInfo.getCode()+"'";
+        list=jdbcTemplate.queryForList(sql);
+        dynamicStateInfo.setUser_dp(list.get(0).get("user_dp").toString());
+        dynamicStateInfo.setName(list.get(0).get("name").toString());
+        /*评论详细内容*/
+        List<Comment> comments=new ArrayList<Comment>();
+        sql="select friend_code,text,user_dp as friend_dp,name as friend_name\n" +
+                "from dynamic_state_evaluate a,user_info b\n" +
+                "where b.code in(\n" +
+                "\tselect friend_code\n" +
+                "\tfrom dynamic_state\n" +
+                "\twhere state_code='"+state_code+"'\n" +
+                ")";
+        list=jdbcTemplate.queryForList(sql);
+        for(Map<String, Object> map : list){
+            Comment comment=new Comment();
+            comment.setFriend_code(map.get("friend_code").toString());
+            comment.setFriend_dp(map.get("friend_dp").toString());
+            comment.setFriend_name(map.get("friend_name").toString());
+            comment.setText(map.get("text").toString());
+            comments.add(comment);
+        }
+        dynamicStateInfo.setComments(comments);
+        return dynamicStateInfo;
     }
 }

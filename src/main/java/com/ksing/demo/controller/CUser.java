@@ -1,9 +1,6 @@
 package com.ksing.demo.controller;
 
-import com.ksing.demo.entity.DynamicState;
-import com.ksing.demo.entity.User;
-import com.ksing.demo.entity.UserInfo;
-import com.ksing.demo.entity.User_info;
+import com.ksing.demo.entity.*;
 import com.ksing.demo.logic.LDynamicState;
 import com.ksing.demo.logic.LUser;
 import org.springframework.http.HttpRequest;
@@ -277,5 +274,18 @@ public class CUser {
     @RequestMapping("/logout")
     public void logout(HttpServletRequest request){
         request.getSession().invalidate();
+    }
+
+    @RequestMapping("/getDynamicStateInfo")
+    public DynamicStateInfo getDynamicStateInfo(HttpServletRequest request){
+        DynamicStateInfo dynamicStateInfo=new DynamicStateInfo();
+        String state_code=request.getParameter("state_code").toString();
+        LDynamicState lDynamicState=new LDynamicState();
+        try {
+            dynamicStateInfo=lDynamicState.getDSI(state_code);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return dynamicStateInfo;
     }
 }
