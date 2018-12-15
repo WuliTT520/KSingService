@@ -236,4 +236,21 @@ public class LUser {
         }
         return name;
     }
+
+    public int isRead(String code){
+        int n=0;
+        String sql="UPDATE dynamic_state_evaluate set isread=1\n" +
+                "where state_code=(\n" +
+                "\tSELECT state_code \n" +
+                "\tfrom dynamic_state\n" +
+                "\twhere code='"+code+"'\n" +
+                ")";
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        try {
+            n=jdbcTemplate.update(sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return n;
+    }
 }

@@ -268,16 +268,14 @@ public class CUser {
         String code=request.getSession().getAttribute("code").toString();
         LUser lUser=new LUser();
         String name=lUser.getPLinfo(code);
-
         System.out.println("获取数据");
+        lUser.isRead(code);
+        System.out.println("消息已读");
         return name;
     }
     /*退出登陆*/
     @RequestMapping("/logout")
     public void logout(HttpServletRequest request){
-//        System.out.println("*******************");
-//        System.out.println("yes");
-//        System.out.println("*******************");
         request.getSession().invalidate();
     }
 }
