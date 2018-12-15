@@ -44,7 +44,9 @@ public class CUser {
             HttpSession session;
             session=request.getSession();
             session.setAttribute("code",code);
+            response.addHeader("cookie",session.getId());
         }
+
         return user;
     }
     /*获取用户信息*/
@@ -259,5 +261,23 @@ public class CUser {
             e.printStackTrace();
         }
         return dynamicStates;
+    }
+    /*获取评论消息*/
+    @RequestMapping("/getMsg")
+    public String getMsg(HttpServletRequest request){
+        String code=request.getSession().getAttribute("code").toString();
+        LUser lUser=new LUser();
+        String name=lUser.getPLinfo(code);
+
+        System.out.println("获取数据");
+        return name;
+    }
+    /*退出登陆*/
+    @RequestMapping("/logout")
+    public void logout(HttpServletRequest request){
+//        System.out.println("*******************");
+//        System.out.println("yes");
+//        System.out.println("*******************");
+        request.getSession().invalidate();
     }
 }

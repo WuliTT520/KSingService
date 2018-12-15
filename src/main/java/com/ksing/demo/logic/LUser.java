@@ -204,4 +204,36 @@ public class LUser {
 //        userInfo.print();
         return userInfo;
     }
+
+    public String getPLinfo(String code){
+        String name="";
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        String sql="SELECT name\n" +
+                "from user_info\n" +
+                "where code in(\n" +
+                "\tSELECT friend_code\n" +
+                "\tFROM dynamic_state_evaluate\n" +
+                "\twhere isread=0 and state_code =(\n" +
+                "\t\tSELECT state_code \n" +
+                "\t\tfrom dynamic_state\n" +
+                "\t\twhere code='"+code+"'\n" +
+                "\t)\n" +
+                ")";
+//            System.out.println(sql);
+        try {
+            List<String> names=jdbcTemplate.queryForList(sql,String.class);
+            for(int i=0;i<names.size();i++){
+                name+=names.get(i);
+                if(i!=names.size()-1){
+                    name+=",";
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (name==null){
+            return null;
+        }
+        return name;
+    }
 }
