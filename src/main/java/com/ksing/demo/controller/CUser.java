@@ -1,20 +1,25 @@
 package com.ksing.demo.controller;
 
 import com.ksing.demo.entity.*;
+import com.ksing.demo.file.FileCopy;
 import com.ksing.demo.logic.LDynamicState;
+import com.ksing.demo.logic.LSong;
 import com.ksing.demo.logic.LUser;
 import org.springframework.http.HttpRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 @RestController
@@ -305,5 +310,40 @@ public class CUser {
             /*成功*/
             out.write("1");
         }
+    }
+    @RequestMapping("/getListOfAllSong")
+    public List<Song> getListOfAllSong(){
+        List<Song> songs=null;
+        LSong lSong=new LSong();
+        songs=lSong.getListOfSong();
+        return songs;
+    }
+    /*上传歌曲(后面还要数据库添加数据)*/
+    @RequestMapping("/uploadMySong")
+    public void uploadMySong(HttpServletRequest request,@RequestParam("upload") MultipartFile file) throws IOException, ServletException {
+        /*项目地址*/
+        String rootPath="F:/GitHub/KSingService/src/main/resources/static/song";
+        /*原始文件名称*/
+        String originalFilename=file.getOriginalFilename();
+//        MultipartFile fileB=file;
+        /*tomcat地址*/
+        String path=request.getServletContext().getRealPath("/song/");
+        File pathFile=new File(path);
+        if (!pathFile.exists()){
+            pathFile.mkdir();
+        }
+        System.out.println(path);
+        try {
+//            file.transferTo(new File(rootPath+File.separator+originalFilename));
+            File file1=new File(path+File.separator+originalFilename);
+            File file2=new File(rootPath+File.separator+originalFilename);
+            file.transferTo(file1);
+            FileCopy copy=new FileCopy();
+            /*复制文件*/
+            copy.fileCopyWithFileChannel(file1,file2);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
