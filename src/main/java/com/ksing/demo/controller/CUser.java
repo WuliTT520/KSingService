@@ -316,6 +316,7 @@ public class CUser {
         List<Song> songs=null;
         LSong lSong=new LSong();
         songs=lSong.getListOfSong();
+        System.out.println("getListOfAllSong");
         return songs;
     }
     /*上传歌曲(后面还要数据库添加数据)*/

@@ -12,7 +12,7 @@ public class LSong {
     public List<Song> getListOfSong(){
         List<Song> songs=new ArrayList<Song>();
         JdbcTemplate jdbcTemplate= (JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
-        String sql="SELECT song_code,code,song_name,singer,song_picture\n" +
+        String sql="SELECT song_code,code,song_name,singer,song_picture,song_path\n" +
                 "FROM song";
         try {
             List<Map<String,Object>>list=jdbcTemplate.queryForList(sql);
@@ -23,6 +23,7 @@ public class LSong {
                 song.setSong_name(map.get("song_name").toString());
                 song.setSinger(map.get("singer").toString());
                 song.setSong_picture(map.get("song_picture").toString());
+                song.setSong_path(map.get("song_path").toString());
                 songs.add(song);
             }
         }catch (Exception e){

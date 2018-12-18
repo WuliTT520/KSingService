@@ -6,6 +6,15 @@ public class Song {
     private String song_name;
     private String singer;
     private String song_picture;
+    private String song_path;
+
+    public String getSong_path() {
+        return song_path;
+    }
+
+    public void setSong_path(String song_path) {
+        this.song_path = song_path;
+    }
 
     public String getSong_code() {
         return song_code;
