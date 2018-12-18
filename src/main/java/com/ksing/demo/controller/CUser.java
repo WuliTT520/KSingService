@@ -324,6 +324,7 @@ public class CUser {
     public void uploadMySong(HttpServletRequest request,@RequestParam("upload") MultipartFile file) throws IOException, ServletException {
         /*项目地址*/
         String rootPath="F:/GitHub/KSingService/src/main/resources/static/song";
+        String code=request.getSession().getAttribute("code").toString();
         /*原始文件名称*/
         String originalFilename=file.getOriginalFilename();
 //        MultipartFile fileB=file;
@@ -345,6 +346,22 @@ public class CUser {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        /*数据库添加数据*/
+        /*歌曲列表中添加歌曲*/
+        String song_code=request.getParameter("song_code");
+
+        LSong lSong=new LSong();
+        Song song=lSong.findSong(song_code);
+        String song_name=song.getSong_name();
+        String song_pic=song.getSong_picture();
+        System.out.println(song_name+" "+song_pic);
+        lSong.addSong(code,song_name,code,song_pic,"/song/"+originalFilename);
+
+        /*发布动态*/
+        String user_text=request.getParameter("user_text");
+        LDynamicState lDynamicState=new LDynamicState();
+        lDynamicState.addDynamicState(code,song_code,user_text);
 
     }
 }

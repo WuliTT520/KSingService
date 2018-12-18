@@ -94,7 +94,7 @@ public class LDynamicState {
                 "\tselect friend_code\n" +
                 "\tfrom dynamic_state\n" +
                 "\twhere state_code='"+state_code+"'\n" +
-                ")";
+                ")and a.`code`=c.`code`";
         list=jdbcTemplate.queryForList(sql);
         for(Map<String, Object> map : list){
             Comment comment=new Comment();
@@ -114,6 +114,18 @@ public class LDynamicState {
         String sql="INSERT INTO dynamic_state_evaluate\n" +
                 "(state_code,friend_code,text,isread)\n" +
                 "VALUES ('"+state_code+"','"+friend_code+"','"+text+"',0)";
+        try {
+            n=jdbcTemplate.update(sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return n;
+    }
+    public int addDynamicState(String code,String song_code,String user_text){
+        int n=0;
+        JdbcTemplate jdbcTemplate=(JdbcTemplate) SpringUtil.applicationContext.getBean("jdbcTemplate");
+        String sql="INSERT INTO dynamic_state (state_code,code,song_code,user_text)\n" +
+                "VALUES ('10004','"+code+"','"+song_code+"','"+user_text+"')";
         try {
             n=jdbcTemplate.update(sql);
         }catch (Exception e){
